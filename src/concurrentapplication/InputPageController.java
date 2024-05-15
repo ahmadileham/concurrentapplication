@@ -9,6 +9,8 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;
@@ -16,32 +18,66 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.Condition;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.stage.Stage;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 /**
  * FXML Controller class
  *
  * @author Ilham
  */
 public class InputPageController implements Initializable {
+    
+    static Algorithm qayleefAlgo = new Algorithm("Qayleef");
+    static Algorithm jasonAlgo = new Algorithm("Jason");
+    static Algorithm jsAlgo = new Algorithm("Jing Shan");
+    
+    File file;
+    String filePath;
+    
+    private Stage stage;
+    private Scene scene;
+    private Parent root;
+    
 
     @FXML
     private TextField filePathField;
+    
+    @FXML
+    private Button submitFileBtn;
     
     static ArrayList<Word> wordList = new ArrayList<>();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }    
+    }
+    
+    @FXML
+    private void submitFile(ActionEvent event) throws IOException {
+        
+        qayleefAlgorithm();
+        jsAlgorithm();
+        jasonAlgorithm();
+            
+        root = FXMLLoader.load(getClass().getResource("/concurrentapplication/resultPage.fxml"));
+        stage = (Stage)((Node)event.getSource()).getScene().getWindow();
+        scene = new Scene(root);
+        stage.setScene(scene);
+        stage.show();
+        
+    }
 
     @FXML
     private void browseFile() throws IOException {
@@ -50,49 +86,10 @@ public class InputPageController implements Initializable {
         File selectedFile = fileChooser.showOpenDialog(null);
         if (selectedFile != null) {
             filePathField.setText(selectedFile.getAbsolutePath());
-            String[] texts = readTextFromFile(selectedFile);
-            
-            ExecutorService executor = Executors.newFixedThreadPool(3);
-            Map<String, Integer> globalWordCounts = new ConcurrentHashMap<>();
-            for (String text : texts) {
-                executor.submit(() -> processText(text, globalWordCounts));
-            }
-            executor.shutdown();
-            while (!executor.isTerminated()) {
-                // Wait
-            }
-            for (Map.Entry<String, Integer> entry : globalWordCounts.entrySet()) {
-                wordList.add(new Word(entry.getKey(), entry.getValue()));
-            }
-            // Load the result page
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/concurrentapplication/resultPage.fxml"));
-            Parent root = loader.load();
-            ResultPageController resultController = loader.getController();
-
-            // Show the result page
-            Stage resultStage = new Stage();
-            resultStage.setScene(new Scene(root));
-            resultStage.show();
+            submitFileBtn.setDisable(false);
+            this.file = selectedFile;
+            this.filePath = selectedFile.getAbsolutePath();
         }
-    } 
-    
-    private void printFileContent(File file) {
-        try (BufferedReader br = new BufferedReader(new FileReader(file))) {
-            String line;
-            System.out.println("Content of the file:");
-            while ((line = br.readLine()) != null) {
-                System.out.println(line);
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading file: " + e.getMessage());
-        }
-    }
-    
-    private String calculateWordFrequencies(File file) {
-        // Implement your logic to calculate word frequencies here
-        // Return the word frequencies as a String
-        // For example:
-        return "Word1: 10\nWord2: 5\nWord3: 8";
     }
     
     static void processText(String text, Map<String, Integer> wordCounts) {
@@ -113,6 +110,66 @@ public class InputPageController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
             return new String[0];         }
+    }
+
+    private void qayleefAlgorithm() {
+        
+        long startTime = System.nanoTime();
+        String[] texts = readTextFromFile(file);
+        ExecutorService executor = Executors.newFixedThreadPool(3);
+        Map<String, Integer> globalWordCounts = new ConcurrentHashMap<>();
+        for (String text : texts) {
+            executor.submit(() -> processText(text, globalWordCounts));
+        }
+        executor.shutdown();
+        while (!executor.isTerminated()) {
+            // Wait
+        }
+        for (Map.Entry<String, Integer> entry : globalWordCounts.entrySet()) {
+            wordList.add(new Word(entry.getKey(), entry.getValue()));
+        }
+        long endTime = System.nanoTime();
+        
+        long processingTimeMs = (endTime - startTime) / 1_000_000;
+        qayleefAlgo.setTime(processingTimeMs);
+    }
+    
+    private void jsAlgorithm(){
+        long startTime = System.nanoTime();
+        Map<String, Integer> tokenFreq = new HashMap<>();
+        
+        try (BufferedReader reader = new BufferedReader(new FileReader(file))){
+            String line;
+            while((line = reader.readLine()) != null){
+                String[] tokens = line.split("\\s+");
+                for(String token : tokens){
+                    tokenFreq.put(token, tokenFreq.getOrDefault(token, 0) + 1);
+                }
+            }
+        }catch(IOException e){
+            System.out.println(e.getMessage());
+        }
+        long endTime = System.nanoTime();
+        
+        long processingTimeMs = (endTime - startTime) / 1_000_000;
+        jsAlgo.setTime(processingTimeMs);
+    }
+    
+    private void jasonAlgorithm() throws IOException{
+        long startTime = System.nanoTime();
+        List<String> lines = Files.readAllLines(Paths.get(filePath));
+        
+        // Treat each line as a separate document
+        String[] documents = lines.toArray(new String[0]);
+        
+        // Calculate the bag of words
+        BagOfWords bagOfWords = new BagOfWords();
+        Map<String, Integer> result = bagOfWords.calculateBagOfWords(documents);
+
+        long endTime = System.nanoTime();
+        
+        long processingTimeMs = (endTime - startTime) / 1_000_000;
+        jasonAlgo.setTime(processingTimeMs);
     }
     
 }
