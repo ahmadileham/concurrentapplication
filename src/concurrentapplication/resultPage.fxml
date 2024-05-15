@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="concurrentapplication.ResultPageController">
+    <stylesheets>
+        <URL value="@resultpage.css" />
+    </stylesheets>
+   <children>
+      <TextArea fx:id="wordListText" editable="false" layoutX="184.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0" />
+   </children>
+</AnchorPane>
