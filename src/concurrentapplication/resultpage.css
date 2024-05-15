@@ -5,3 +5,11 @@
 .mainFxmlClass {
 
 }
+
+.pane_1 {
+    -fx-border-width: 2px 2px 2px 2px;
+    -fx-border-radius: 10px;
+    -fx-background-radius: 10px;
+    -fx-border-style: solid;
+    -fx-border-color: #000000;
+}
