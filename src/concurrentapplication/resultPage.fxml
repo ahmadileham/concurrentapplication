@@ -1,14 +1,95 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import java.net.URL?>
+<?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="concurrentapplication.ResultPageController">
+<AnchorPane id="AnchorPane" prefHeight="451.0" prefWidth="671.0" style="-fx-background-color: #F6F5F2;" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="concurrentapplication.ResultPageController">
     <stylesheets>
         <URL value="@resultpage.css" />
     </stylesheets>
    <children>
-      <TextArea fx:id="wordListText" editable="false" layoutX="184.0" layoutY="100.0" prefHeight="200.0" prefWidth="200.0" />
+      <Pane prefHeight="451.0" prefWidth="671.0">
+         <children>
+            <VBox prefHeight="451.0" prefWidth="671.0">
+               <children>
+                  <Pane prefHeight="83.0" prefWidth="600.0">
+                     <children>
+                        <Label alignment="CENTER" contentDisplay="CENTER" layoutX="231.0" layoutY="25.0" text="PERFOMANCE" textAlignment="CENTER">
+                           <font>
+                              <Font name="ROGFonts-Regular" size="24.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </Pane>
+                  <Pane prefHeight="270.0" prefWidth="671.0">
+                     <children>
+                        <HBox layoutX="4.0" layoutY="-5.0" prefHeight="288.0" prefWidth="663.0">
+                           <children>
+                              <Pane prefHeight="224.0" prefWidth="220.0">
+                                 <children>
+                                    <Pane layoutX="31.0" layoutY="78.0" prefHeight="180.0" prefWidth="159.0" styleClass="pane_1">
+                                       <children>
+                                          <TextArea fx:id="wordListText1" layoutX="3.0" layoutY="6.0" prefHeight="168.0" prefWidth="153.0" />
+                                       </children>
+                                    </Pane>
+                                    <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="75.0" layoutY="6.0" text="Sequential" textAlignment="CENTER">
+                                       <font>
+                                          <Font name="Arial Black" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <Text fx:id="time1" layoutX="31.0" layoutY="54.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time taken: " />
+                                 </children>
+                              </Pane>
+                              <Pane prefHeight="301.0" prefWidth="224.0">
+                                 <children>
+                                    <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="73.0" layoutY="6.0" text="Algorithm 1" textAlignment="CENTER">
+                                       <font>
+                                          <Font name="Arial Black" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <Pane layoutX="31.0" layoutY="78.0" prefHeight="180.0" prefWidth="159.0" styleClass="pane_1">
+                                       <children>
+                                          <TextArea fx:id="wordListText2" layoutX="3.0" layoutY="6.0" prefHeight="168.0" prefWidth="153.0" />
+                                       </children>
+                                    </Pane>
+                                    <Text fx:id="time2" layoutX="31.0" layoutY="55.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time taken: " />
+                                 </children>
+                              </Pane>
+                              <Pane prefHeight="224.0" prefWidth="220.0">
+                                 <children>
+                                    <Text fx:id="time3" layoutX="31.0" layoutY="57.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Time taken: " />
+                                    <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="73.0" layoutY="6.0" text="Algorithm 2" textAlignment="CENTER">
+                                       <font>
+                                          <Font name="Arial Black" size="12.0" />
+                                       </font>
+                                    </Label>
+                                    <Pane layoutX="31.0" layoutY="78.0" prefHeight="180.0" prefWidth="159.0" styleClass="pane_1">
+                                       <children>
+                                          <TextArea fx:id="wordListText3" layoutX="3.0" layoutY="6.0" prefHeight="168.0" prefWidth="153.0" />
+                                       </children>
+                                    </Pane>
+                                 </children>
+                              </Pane>
+                           </children>
+                        </HBox>
+                     </children>
+                  </Pane>
+                  <Pane prefHeight="138.0" prefWidth="671.0">
+                     <children>
+                        <Label fx:id="os" contentDisplay="CENTER" layoutX="96.0" layoutY="12.0" prefHeight="100.0" prefWidth="240.0" />
+                        <Label fx:id="textsize" layoutX="406.0" layoutY="54.0" prefHeight="17.0" prefWidth="110.0" />
+                     </children>
+                  </Pane>
+               </children>
+            </VBox>
+         </children>
+      </Pane>
    </children>
 </AnchorPane>

@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/18" xmlns:fx="http://javafx.com/fxml/1" fx:controller="concurrentapplication.InputPageController">
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="concurrentapplication.InputPageController">
     <stylesheets>
         <URL value="@inputpage.css" />
     </stylesheets>
@@ -16,14 +16,14 @@
       <Pane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #EEF7FF;">
          <children>
             <TextField fx:id="filePathField" editable="false" layoutX="184.0" layoutY="212.0" promptText="Selected File" />
-            <Button layoutX="228.0" layoutY="248.0" mnemonicParsing="false" onAction="#browseFile" text="Browse" />
+            <Button layoutX="347.0" layoutY="212.0" mnemonicParsing="false" onAction="#browseFile" text="Browse" />
             <Label layoutX="235.0" layoutY="74.0" text="CPP Infinty">
                <font>
                   <Font name="Franklin Gothic Heavy" size="25.0" />
                </font>
             </Label>
             <Label layoutX="184.0" layoutY="183.0" text="Bag of Words" />
-            <Button fx:id="submitFileBtn" layoutX="348.0" layoutY="212.0" mnemonicParsing="false" onAction="#submitFile" text="Submit" />
+            <Button fx:id="submitFileBtn" layoutX="410.0" layoutY="212.0" mnemonicParsing="false" onAction="#submitFile" text="Submit" />
          </children>
       </Pane>
    </children>

@@ -44,7 +44,7 @@ public class InputPageController implements Initializable {
     static Algorithm jsAlgo = new Algorithm("Jing Shan");
     
     File file;
-    String filePath;
+    static String filePath;
     
     private Stage stage;
     private Scene scene;
@@ -57,7 +57,13 @@ public class InputPageController implements Initializable {
     @FXML
     private Button submitFileBtn;
     
-    static ArrayList<Word> wordList = new ArrayList<>();
+    static ArrayList<Word> wordList1 = new ArrayList<>();
+    static ArrayList<Word> wordList2 = new ArrayList<>();
+    static ArrayList<Word> wordList3 = new ArrayList<>();
+    
+    static String time1;
+    static String time2;
+    static String time3;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -126,12 +132,13 @@ public class InputPageController implements Initializable {
             // Wait
         }
         for (Map.Entry<String, Integer> entry : globalWordCounts.entrySet()) {
-            wordList.add(new Word(entry.getKey(), entry.getValue()));
+            wordList1.add(new Word(entry.getKey(), entry.getValue()));
         }
         long endTime = System.nanoTime();
         
         long processingTimeMs = (endTime - startTime) / 1_000_000;
         qayleefAlgo.setTime(processingTimeMs);
+        time1 = String.valueOf(processingTimeMs);
     }
     
     private void jsAlgorithm(){
@@ -149,10 +156,16 @@ public class InputPageController implements Initializable {
         }catch(IOException e){
             System.out.println(e.getMessage());
         }
+        
+        // Convert tokenFreq map entries into Word objects and add them to wordList2
+        for (Map.Entry<String, Integer> entry : tokenFreq.entrySet()) {
+            wordList2.add(new Word(entry.getKey(), entry.getValue()));
+        }
         long endTime = System.nanoTime();
         
         long processingTimeMs = (endTime - startTime) / 1_000_000;
         jsAlgo.setTime(processingTimeMs);
+        time2 = String.valueOf(processingTimeMs);
     }
     
     private void jasonAlgorithm() throws IOException{
@@ -165,11 +178,17 @@ public class InputPageController implements Initializable {
         // Calculate the bag of words
         BagOfWords bagOfWords = new BagOfWords();
         Map<String, Integer> result = bagOfWords.calculateBagOfWords(documents);
+        
+        // Convert the result map entries into Word objects and add them to wordList3
+        for (Map.Entry<String, Integer> entry : result.entrySet()) {
+            wordList3.add(new Word(entry.getKey(), entry.getValue()));
+        }
 
         long endTime = System.nanoTime();
         
         long processingTimeMs = (endTime - startTime) / 1_000_000;
         jasonAlgo.setTime(processingTimeMs);
+        time3 = String.valueOf(processingTimeMs);
     }
     
 }
