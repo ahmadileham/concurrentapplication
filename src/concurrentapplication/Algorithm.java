@@ -12,9 +12,12 @@ import java.util.ArrayList;
  */
 public class Algorithm {
     private String name;
-    private double performance;
-    private ArrayList<Word> mostFrequentWords;
-
+    private long time;
+    
+    public Algorithm(String name) {
+        this.name = name;
+    }
+    
     public String getName() {
         return name;
     }
@@ -23,20 +26,12 @@ public class Algorithm {
         this.name = name;
     }
 
-    public double getPerformance() {
-        return performance;
+    public long getTime() {
+        return time;
     }
 
-    public void setPerformance(double performance) {
-        this.performance = performance;
-    }
-
-    public ArrayList<Word> getMostFrequentWords() {
-        return mostFrequentWords;
-    }
-
-    public void setMostFrequentWords(ArrayList<Word> mostFrequentWords) {
-        this.mostFrequentWords = mostFrequentWords;
+    public void setTime(long time) {
+        this.time = time;
     }
     
     

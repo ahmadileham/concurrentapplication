@@ -21,6 +21,8 @@ import javafx.scene.control.TextField;
 public class ResultPageController implements Initializable {
     @FXML
     private TextArea wordListText;
+    
+    private String wordsDisplay="";
     /**
      * Initializes the controller class.
      */
