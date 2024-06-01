@@ -56,14 +56,14 @@ public class ResultPageController implements Initializable {
         setWordList(tableView1, InputPageController.wordList1);
 
         // Populate TableView for Algorithm 2
-        setWordList(tableView2, InputPageController.wordList2);
+        setWordList(tableView2, InputPageController.wordList2); 
 
         // Populate TableView for Algorithm 3
         setWordList(tableView3, InputPageController.wordList3);
         
         //Time taken for every algorithm
-        time1.setText("Time taken: " + InputPageController.qayleefAlgo.getTime() + "ms");
-        time2.setText("Time taken: " + InputPageController.jsAlgo.getTime() + "ms");
+        time1.setText("Time taken: " + InputPageController.jsAlgo.getTime() + "ms");
+        time2.setText("Time taken: " + InputPageController.qayleefAlgo.getTime() + "ms");
         time3.setText("Time taken: " + InputPageController.jasonAlgo.getTime() + "ms");
         
         

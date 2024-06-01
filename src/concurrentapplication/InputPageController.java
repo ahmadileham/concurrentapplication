@@ -132,13 +132,13 @@ public class InputPageController implements Initializable {
             // Wait
         }
         for (Map.Entry<String, Integer> entry : globalWordCounts.entrySet()) {
-            wordList1.add(new Word(entry.getKey(), entry.getValue()));
+            wordList2.add(new Word(entry.getKey(), entry.getValue()));
         }
         long endTime = System.nanoTime();
         
         long processingTimeMs = (endTime - startTime) / 1_000_000;
         qayleefAlgo.setTime(processingTimeMs);
-        time1 = String.valueOf(processingTimeMs);
+        time2 = String.valueOf(processingTimeMs);
     }
     
     private void jsAlgorithm(){
@@ -159,13 +159,13 @@ public class InputPageController implements Initializable {
         
         // Convert tokenFreq map entries into Word objects and add them to wordList2
         for (Map.Entry<String, Integer> entry : tokenFreq.entrySet()) {
-            wordList2.add(new Word(entry.getKey(), entry.getValue()));
+            wordList1.add(new Word(entry.getKey(), entry.getValue()));
         }
         long endTime = System.nanoTime();
         
         long processingTimeMs = (endTime - startTime) / 1_000_000;
         jsAlgo.setTime(processingTimeMs);
-        time2 = String.valueOf(processingTimeMs);
+        time1 = String.valueOf(processingTimeMs);
     }
     
     private void jasonAlgorithm() throws IOException{
