@@ -6,6 +6,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
@@ -25,6 +26,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.concurrent.CompletableFuture;
+import java.util.concurrent.TimeUnit;
 
 public class InputPageController implements Initializable {
 
@@ -106,26 +109,33 @@ public class InputPageController implements Initializable {
     }
 
     private void qayleefAlgorithm(String cleanedText) {
-        long startTime = System.nanoTime();
-
-        ExecutorService executor = Executors.newFixedThreadPool(3);
         Map<String, Integer> globalWordCounts = new ConcurrentHashMap<>();
-        String[] texts = cleanedText.split("\\s+");
+        String[] tokens = cleanedText.split("\\s+");
+        int batchSize = 1000; 
 
-        for (String text : texts) {
-            executor.submit(() -> {
-                globalWordCounts.merge(text, 1, Integer::sum);
+        List<CompletableFuture<Void>> futures = new ArrayList<>();
+        long startTime = System.nanoTime();
+        for (int i = 0; i < tokens.length; i += batchSize) {
+            int end = Math.min(i + batchSize, tokens.length);
+            String[] batch = Arrays.copyOfRange(tokens, i, end);
+
+            CompletableFuture<Void> future = CompletableFuture.runAsync(() -> {
+                Map<String, Integer> localCounts = new HashMap<>();
+                for (String token : batch) {
+                    localCounts.merge(token.toLowerCase(), 1, Integer::sum);
+                }
+                localCounts.forEach((key, value) -> globalWordCounts.merge(key, value, Integer::sum));
             });
+
+            futures.add(future);
         }
 
-        executor.shutdown();
-        while (!executor.isTerminated()) {
-            // Wait
-        }
+        // Wait for all futures to complete
+        CompletableFuture.allOf(futures.toArray(new CompletableFuture[0])).join();
 
         long endTime = System.nanoTime();
         long processingTimeMs = (endTime - startTime) / 1_000_000;
-        qayleefAlgo.setTime(processingTimeMs);
+        // qayleefAlgo.setTime(processingTimeMs); 
         time2 = String.valueOf(processingTimeMs);
 
         List<Map.Entry<String, Integer>> entryList = new ArrayList<>(globalWordCounts.entrySet());
@@ -143,15 +153,13 @@ public class InputPageController implements Initializable {
     }
 
     private void jsAlgorithm(String cleanedText) {
-        long startTime = System.nanoTime();
-
         Map<String, Integer> tokenFreq = new HashMap<>();
         String[] tokens = cleanedText.split("\\s+");
 
+        long startTime = System.nanoTime();
         for (String token : tokens) {
             tokenFreq.put(token, tokenFreq.getOrDefault(token, 0) + 1);
         }
-
         long endTime = System.nanoTime();
         long processingTimeMs = (endTime - startTime) / 1_000_000;
         jsAlgo.setTime(processingTimeMs);
@@ -169,13 +177,11 @@ public class InputPageController implements Initializable {
     }
 
     private void jasonAlgorithm(String cleanedText) throws IOException {
-        long startTime = System.nanoTime();
-
         String[] documents = cleanedText.split("\\s+");
 
+        long startTime = System.nanoTime();
         BagOfWords bagOfWords = new BagOfWords();
         Map<String, Integer> result = bagOfWords.calculateBagOfWords(documents);
-
         long endTime = System.nanoTime();
         long processingTimeMs = (endTime - startTime) / 1_000_000;
         jasonAlgo.setTime(processingTimeMs);

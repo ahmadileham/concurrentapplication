@@ -16,10 +16,10 @@
         <URL value="@resultpage.css" />
     </stylesheets>
     <children>
-      <VBox alignment="CENTER"  prefHeight="200.0" prefWidth="200.0">
+      <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0">
          <children>
             <HBox alignment="CENTER" prefHeight="451.0" prefWidth="671.0"> 
-            <VBox alignment="CENTER"  prefHeight="451.0" prefWidth="671.0">
+            <VBox alignment="CENTER" prefHeight="451.0" prefWidth="671.0">
                <children>
                   <Pane prefHeight="138.0" prefWidth="671.0" />
                   <AnchorPane prefHeight="200.0" prefWidth="200.0">
@@ -76,7 +76,7 @@
                      <children>
                         <Button layoutX="313.0" layoutY="147.0" onAction="#resetPage" text="Reset" textAlignment="CENTER" AnchorPane.bottomAnchor="39.400000000000006" AnchorPane.leftAnchor="313.0" AnchorPane.rightAnchor="312.6" AnchorPane.topAnchor="147.0" />
                         <Label fx:id="os" contentDisplay="CENTER" layoutX="75.0" prefHeight="100.0" prefWidth="240.0" />
-                        <Label fx:id="textsize" layoutX="392.0" layoutY="29.0" prefHeight="41.0" prefWidth="128.0" />
+                        <Label fx:id="textsize" layoutX="392.0" layoutY="29.0" prefHeight="42.0" prefWidth="224.0" />
                      </children>
                   </AnchorPane>
                </children>

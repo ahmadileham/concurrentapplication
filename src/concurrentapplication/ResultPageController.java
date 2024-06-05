@@ -48,6 +48,8 @@ public class ResultPageController implements Initializable {
     private Stage stage;
     private Scene scene;
     private Parent root;
+    
+    long fileSize = 0;
 
     /**
      * Initializes the controller class.
@@ -74,7 +76,7 @@ public class ResultPageController implements Initializable {
         os.setText("Operating System Name: " + osName + "\nOperating System Version: " + osVersion + "\nOperating System Architecture: " + osArch);
 
         try {
-            long fileSize = Files.size(Paths.get(InputPageController.filePath));
+            fileSize = Files.size(Paths.get(InputPageController.filePath));
             textsize.setText("File size: " + fileSize + " bytes");
         } catch (IOException e) {
             e.printStackTrace();
@@ -114,6 +116,7 @@ public class ResultPageController implements Initializable {
         InputPageController.time1 = "";
         InputPageController.time2 = "";
         InputPageController.time3 = "";
+        fileSize = 0;
 
         // Load Input Page
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/concurrentapplication/InputPage.fxml"));
