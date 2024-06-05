@@ -7,7 +7,9 @@ package concurrentapplication;
 /**
  *
  * @author JASON CODE
- */import java.util.LinkedHashMap;
+ */
+
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -43,9 +45,6 @@ public class BagOfWords {
                 Map<String, Integer> rightResult = rightTask.join();
                 Map<String, Integer> leftResult = leftTask.join();
 
-                // Print the number of threads in the pool
-                //System.out.println("Number of threads in the pool: " + ForkJoinPool.commonPool().getParallelism());
-
                 return mergeWordCounts(leftResult, rightResult);
             }
         }
@@ -74,7 +73,10 @@ public class BagOfWords {
         private Map<String, Integer> sortWordCounts(Map<String, Integer> wordCounts) {
             // Sort word counts based on the number of occurrences
             return wordCounts.entrySet().stream()
-                    .sorted(Map.Entry.<String, Integer>comparingByValue().reversed())
+                    .sorted((entry1, entry2) -> {
+                        int freqCompare = entry2.getValue().compareTo(entry1.getValue());
+                        return freqCompare != 0 ? freqCompare : entry1.getKey().compareTo(entry2.getKey());
+                    })
                     .collect(LinkedHashMap::new, (map, entry) -> map.put(entry.getKey(), entry.getValue()), LinkedHashMap::putAll);
         }
     }

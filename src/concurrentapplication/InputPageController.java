@@ -5,8 +5,6 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.net.URL;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -26,8 +24,7 @@ import javafx.scene.control.TextField;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import java.util.HashMap;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.VBox;
+import java.util.LinkedHashMap;
 
 public class InputPageController implements Initializable {
 
@@ -64,9 +61,13 @@ public class InputPageController implements Initializable {
     @FXML
     private void submitFile(ActionEvent event) {
         try {
-            qayleefAlgorithm();
-            jsAlgorithm();
-            jasonAlgorithm();
+            // Read and clean the text file once
+            String cleanedText = readAndCleanText(file);
+
+            // Execute each algorithm
+            qayleefAlgorithm(cleanedText);
+            jsAlgorithm(cleanedText);
+            jasonAlgorithm(cleanedText);
 
             root = FXMLLoader.load(getClass().getResource("/concurrentapplication/resultPage.fxml"));
             stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -91,94 +92,97 @@ public class InputPageController implements Initializable {
         }
     }
 
-    static void processText(String text, Map<String, Integer> wordCounts) {
-        String[] words = text.split("\\s+");
-        for (String word : words) {
-            wordCounts.put(word, wordCounts.getOrDefault(word, 0) + 1);
-        }
-    }
-
-    static String[] readTextFromFile(File file) {
+    private String readAndCleanText(File file) throws IOException {
+        StringBuilder cleanedText = new StringBuilder();
         try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            StringBuilder sb = new StringBuilder();
             String line;
             while ((line = reader.readLine()) != null) {
-                sb.append(line).append("\n");
+                // Retain apostrophes and dashes within words, remove other punctuation
+                line = line.replaceAll("[^a-zA-Z0-9\\s'-]", "").toLowerCase();
+                cleanedText.append(line).append(" ");
             }
-            return sb.toString().split("\\n");
-        } catch (IOException e) {
-            e.printStackTrace();
-            return new String[0];
         }
+        return cleanedText.toString();
     }
 
-    private void qayleefAlgorithm() {
+    private void qayleefAlgorithm(String cleanedText) {
         long startTime = System.nanoTime();
-        String[] texts = readTextFromFile(file);
+
         ExecutorService executor = Executors.newFixedThreadPool(3);
         Map<String, Integer> globalWordCounts = new ConcurrentHashMap<>();
+        String[] texts = cleanedText.split("\\s+");
+
         for (String text : texts) {
-            executor.submit(() -> processText(text, globalWordCounts));
+            executor.submit(() -> {
+                globalWordCounts.merge(text, 1, Integer::sum);
+            });
         }
+
         executor.shutdown();
         while (!executor.isTerminated()) {
             // Wait
         }
-        for (Map.Entry<String, Integer> entry : globalWordCounts.entrySet()) {
-            wordList2.add(new Word(entry.getKey(), entry.getValue()));
-        }
-        long endTime = System.nanoTime();
 
+        long endTime = System.nanoTime();
         long processingTimeMs = (endTime - startTime) / 1_000_000;
         qayleefAlgo.setTime(processingTimeMs);
         time2 = String.valueOf(processingTimeMs);
+
+        List<Map.Entry<String, Integer>> entryList = new ArrayList<>(globalWordCounts.entrySet());
+        entryList.sort((e1, e2) -> {
+            int compare = e2.getValue().compareTo(e1.getValue());
+            if (compare == 0) {
+                return e1.getKey().compareTo(e2.getKey());
+            }
+            return compare;
+        });
+
+        for (Map.Entry<String, Integer> entry : entryList) {
+            wordList2.add(new Word(entry.getKey(), entry.getValue()));
+        }
     }
 
-    private void jsAlgorithm() {
+    private void jsAlgorithm(String cleanedText) {
         long startTime = System.nanoTime();
+
         Map<String, Integer> tokenFreq = new HashMap<>();
+        String[] tokens = cleanedText.split("\\s+");
 
-        try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] tokens = line.split("\\s+");
-                for (String token : tokens) {
-                    tokenFreq.put(token, tokenFreq.getOrDefault(token, 0) + 1);
-                }
-            }
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
+        for (String token : tokens) {
+            tokenFreq.put(token, tokenFreq.getOrDefault(token, 0) + 1);
         }
 
-        for (Map.Entry<String, Integer> entry : tokenFreq.entrySet()) {
-            wordList1.add(new Word(entry.getKey(), entry.getValue()));
-        }
         long endTime = System.nanoTime();
-
         long processingTimeMs = (endTime - startTime) / 1_000_000;
         jsAlgo.setTime(processingTimeMs);
         time1 = String.valueOf(processingTimeMs);
+
+        List<Map.Entry<String, Integer>> sortedEntries = new ArrayList<>(tokenFreq.entrySet());
+        sortedEntries.sort((entry1, entry2) -> {
+            int freqCompare = entry2.getValue().compareTo(entry1.getValue());
+            return freqCompare != 0 ? freqCompare : entry1.getKey().compareTo(entry2.getKey());
+        });
+
+        for (Map.Entry<String, Integer> entry : sortedEntries) {
+            wordList1.add(new Word(entry.getKey(), entry.getValue()));
+        }
     }
 
-    private void jasonAlgorithm() throws IOException {
+    private void jasonAlgorithm(String cleanedText) throws IOException {
         long startTime = System.nanoTime();
-        List<String> lines = Files.readAllLines(Paths.get(filePath));
 
-        // Treat each line as a separate document
-        String[] documents = lines.toArray(new String[0]);
+        String[] documents = cleanedText.split("\\s+");
 
-        // Calculate the bag of words
         BagOfWords bagOfWords = new BagOfWords();
         Map<String, Integer> result = bagOfWords.calculateBagOfWords(documents);
+
+        long endTime = System.nanoTime();
+        long processingTimeMs = (endTime - startTime) / 1_000_000;
+        jasonAlgo.setTime(processingTimeMs);
+        time3 = String.valueOf(processingTimeMs);
 
         for (Map.Entry<String, Integer> entry : result.entrySet()) {
             wordList3.add(new Word(entry.getKey(), entry.getValue()));
         }
-
-        long endTime = System.nanoTime();
-
-        long processingTimeMs = (endTime - startTime) / 1_000_000;
-        jasonAlgo.setTime(processingTimeMs);
-        time3 = String.valueOf(processingTimeMs);
     }
 }
