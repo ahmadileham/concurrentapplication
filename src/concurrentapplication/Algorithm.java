@@ -18,6 +18,11 @@ public class Algorithm {
         this.name = name;
     }
     
+    public void reset() {
+        time = 0;
+        // Reset other state variables if necessary
+    }
+    
     public String getName() {
         return name;
     }
